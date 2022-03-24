@@ -1,0 +1,28 @@
+{
+  "name": "react-mvdb-app",
+  "version": "1.0.0",
+  "description": "This is a movie rating app build in reactjs, nodejs and mongodb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server/index.js"
+  },
+  "keywords": [
+    "movie-rating-app",
+    "react-movie-app"
+  ],
+  "author": "Satyam Gupta",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.2",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
+    "mongoose": "^6.2.7",
+    "nodemon": "^2.0.15",
+    "path": "^0.12.7"
+  }
+}
