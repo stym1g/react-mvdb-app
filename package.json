@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "This is a movie rating app build in reactjs, nodejs and mongodb",
   "main": "index.js",
+  "engines": {
+    "node": "14.15.1"
+   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server/index.js"
+    "start": "node server/index.js",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install npm && run build"
   },
   "keywords": [
     "movie-rating-app",
