@@ -28,9 +28,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // support parsing of application/json type post data
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.get("/", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "../client", "build", "index.html"));
-});
+// app.get("/", (req, res) => {
+//   console.log("Hello!!! ***********   you are inside / route");
+//   //res.sendFile(path.resolve(__dirname, "../client", "build", "index.html"));
+// });
 app.use('/api/users', require('./routes/users'));
 app.use('/api/favorite', require('./routes/favorite'));
 
