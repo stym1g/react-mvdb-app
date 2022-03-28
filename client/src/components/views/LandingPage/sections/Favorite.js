@@ -115,7 +115,7 @@ function Favorite(props) {
             </Button>:null
             }
             {
-                <LikeDislikes video videoId={movieId} userId={localStorage.getItem("userId")}></LikeDislikes>
+                <LikeDislikes video movieId={movieId} userId={localStorage.getItem("userId")}></LikeDislikes>
             }
         </>
     )

@@ -1,20 +1,29 @@
 import React from 'react';
 import { Menu } from 'antd';
-const SubMenu = Menu.SubMenu;
-const MenuItemGroup = Menu.ItemGroup;
+import { useSelector } from "react-redux";
 
 function LeftMenu(props) {
+  const user = useSelector(state => state.user);
   return (
+    (user.userData && user.userData.isAuth)
+    ?
     <Menu mode={props.mode}>
-    <Menu.Item key="mail">
+    <Menu.Item key="left">
       <a href="/">Home</a>
     </Menu.Item>
-    <Menu mode={props.mode}>
-      <Menu.Item key="favorite">
+    <Menu.Item key="favorite">
         <a href="/favorite">Favorite</a>
-      </Menu.Item>
+    </Menu.Item>
     </Menu>
-  </Menu>
+    :
+    <Menu mode={props.mode}>
+    <Menu.Item key="left">
+      <a href="/">Home</a>
+    </Menu.Item>
+    <Menu.Item key="favorite">
+        
+    </Menu.Item>
+    </Menu>
   )
 }
 

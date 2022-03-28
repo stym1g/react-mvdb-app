@@ -1,21 +1,37 @@
 import React, { useEffect, useState } from 'react'
 import SingleComment from './SingleComment';
+import { Comment, Avatar, } from "antd";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 function ReplyComment(props) {
+    const user = useSelector((state) => state.user);
+    const [ChildCommentNumber, setChildCommentNumber] = useState(0);
+    const [OpenReplyComments, setOpenReplyComments] = useState(false);
+    const [commentLists,setCommentLists] = useState([]);
+    // useEffect(() => {
 
-    const [ChildCommentNumber, setChildCommentNumber] = useState(0)
-    const [OpenReplyComments, setOpenReplyComments] = useState(false)
-    useEffect(() => {
+    //     let commentNumber = 0;
+    //     props.CommentLists.map((comment) => {
 
-        let commentNumber = 0;
-        props.CommentLists.map((comment) => {
-
-            if (comment.responseTo === props.parentCommentId) {
-                commentNumber++
+    //         if (comment.responseTo === props.parentCommentId) {
+    //             commentNumber++
+    //         }
+    //     })
+    //     setChildCommentNumber(commentNumber)
+    // }, [props.CommentLists, props.parentCommentId])
+    useEffect(()=>{ 
+        axios.post('/api/comment/getComments', {commentId:props.parentCommentId})
+        .then(response=>{
+            //console.log(response);
+            if(response.data.success){
+                //console.log("response.data.comments: ",response.data.comments);
+                setCommentLists(response.data.comments);
+            }else{
+                console.log("Failed to get comments");
             }
         })
-        setChildCommentNumber(commentNumber)
-    }, [props.CommentLists, props.parentCommentId])
+    },[commentLists]);
 
 
     let renderReplyComment = (parentCommentId) =>
@@ -46,7 +62,16 @@ function ReplyComment(props) {
             }
 
             {OpenReplyComments &&
-                renderReplyComment(props.parentCommentId)
+                props.CommentLists && props.CommentLists.map((comment,index)=>{
+                    return (
+                        <Comment
+                
+                author={comment.writer.name}
+                avatar={<Avatar src={comment.writer.image} alt="image" />}
+                content={<p>{comment.commentBody}</p>}
+              ></Comment>
+                    );
+                })
             }
 
         </div>

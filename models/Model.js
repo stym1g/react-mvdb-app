@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
 const Schema = mongoose.Schema;
-const jwt = require('jsonwebtoken');
-const moment = require("moment");
 const favoriteSchema = mongoose.Schema({
     userFrom: {
         type: Schema.Types.ObjectId,

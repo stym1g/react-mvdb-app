@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { Like } = require("../models/Like");
-const { Dislike } = require("../models/Dislike");
-
+const { Like } = require("../models/LikeDisLike");
+const { DisLike } = require("../models/LikeDisLike");
 const { auth } = require("../middleware/auth");
-
+const { default: mongoose } = require('mongoose');
 //=================================
 //             Likes DisLikes
 //=================================
@@ -12,10 +11,10 @@ const { auth } = require("../middleware/auth");
 router.post("/getLikes", (req, res) => {
 
     let variable = {}
-    if (req.body.videoId) {
-        variable = { videoId: req.body.videoId }
+    if (req.body.movieId) {
+        variable = { movieId: req.body.movieId}
     } else {
-        variable = { commentId: req.body.commentId }
+        variable = { commentId: req.body.commentId}
     }
 
     Like.find(variable)
@@ -23,21 +22,18 @@ router.post("/getLikes", (req, res) => {
             if (err) return res.status(400).send(err);
             res.status(200).json({ success: true, likes })
         })
-
-
 })
-
 
 router.post("/getDislikes", (req, res) => {
 
     let variable = {}
-    if (req.body.videoId) {
-        variable = { videoId: req.body.videoId }
+    if (req.body.movieId) {
+        variable = { movieId: req.body.movieId }
     } else {
         variable = { commentId: req.body.commentId }
     }
 
-    Dislike.find(variable)
+    DisLike.find(variable)
         .exec((err, dislikes) => {
             if (err) return res.status(400).send(err);
             res.status(200).json({ success: true, dislikes })
@@ -47,38 +43,37 @@ router.post("/getDislikes", (req, res) => {
 
 
 router.post("/upLike", (req, res) => {
-
-    let variable = {}
-    if (req.body.videoId) {
-        variable = { videoId: req.body.videoId, userId: req.body.userId }
+    let filter = {};
+    let variable = {};
+    if (req.body.movieId) {
+        filter = {movieId: req.body.movieId, userFrom: req.body.userId};
+        variable = { movieId: req.body.movieId, userFrom: req.body.userId,timestamp:req.body.timestamp }
     } else {
-        variable = { commentId: req.body.commentId , userId: req.body.userId }
+        filter = {commentId: req.body.commentId , userFrom : req.body.userId}
+        variable = { commentId: req.body.commentId , userFrom : req.body.userId,timestamp:req.body.timestamp }
     }
-
-    const like = new Like(variable)
+    //console.log(variable);
+    const like = new Like(variable);
     //save the like information data in MongoDB
-    like.save((err, likeResult) => {
+    like.save((err, data) => {
         if (err) return res.json({ success: false, err });
         //In case disLike Button is already clicked, we need to decrease the dislike by 1 
-        Dislike.findOneAndDelete(variable)
+        DisLike.findOneAndDelete(filter)
             .exec((err, disLikeResult) => {
                 if (err) return res.status(400).json({ success: false, err });
-                res.status(200).json({ success: true })
+                res.status(200).json({ success: true,data:data });
             })
     })
 
-})
-
-
-
+});
 
 router.post("/unLike", (req, res) => {
 
     let variable = {}
-    if (req.body.videoId) {
-        variable = { videoId: req.body.videoId, userId: req.body.userId }
+    if (req.body.movieId) {
+        variable = { movieId: req.body.movieId, userFrom: req.body.userId}
     } else {
-        variable = { commentId: req.body.commentId , userId: req.body.userId }
+        variable = { commentId: req.body.commentId , userFrom : req.body.userId}
     }
 
     Like.findOneAndDelete(variable)
@@ -93,13 +88,13 @@ router.post("/unLike", (req, res) => {
 router.post("/unDisLike", (req, res) => {
 
     let variable = {}
-    if (req.body.videoId) {
-        variable = { videoId: req.body.videoId, userId: req.body.userId }
+    if (req.body.movieId) {
+        variable = { movieId: req.body.movieId, userFrom: req.body.userId}
     } else {
-        variable = { commentId: req.body.commentId , userId: req.body.userId }
+        variable = { commentId: req.body.commentId , userFrom : req.body.userId}
     }
 
-    Dislike.findOneAndDelete(variable)
+    DisLike.findOneAndDelete(variable)
     .exec((err, result) => {
         if (err) return res.status(400).json({ success: false, err })
         res.status(200).json({ success: true })
@@ -112,22 +107,25 @@ router.post("/unDisLike", (req, res) => {
 
 router.post("/upDisLike", (req, res) => {
 
-    let variable = {}
-    if (req.body.videoId) {
-        variable = { videoId: req.body.videoId, userId: req.body.userId }
+    let filter = {};
+    let variable = {};
+    if (req.body.movieId) {
+        filter = {movieId: req.body.movieId, userFrom: req.body.userId};
+        variable = { movieId: req.body.movieId, userFrom: req.body.userId,timestamp:req.body.timestamp }
     } else {
-        variable = { commentId: req.body.commentId , userId: req.body.userId }
+        filter = {commentId: req.body.commentId , userFrom : req.body.userId}
+        variable = { commentId: req.body.commentId , userFrom : req.body.userId,timestamp:req.body.timestamp }
     }
-
-    const disLike = new Dislike(variable)
+    //console.log(variable);
+    const disLike = new DisLike(variable);
     //save the like information data in MongoDB
-    disLike.save((err, dislikeResult) => {
+    disLike.save((err, data) => {
         if (err) return res.json({ success: false, err });
         //In case Like Button is already clicked, we need to decrease the like by 1 
-        Like.findOneAndDelete(variable)
+        Like.findOneAndDelete(filter)
             .exec((err, likeResult) => {
                 if (err) return res.status(400).json({ success: false, err });
-                res.status(200).json({ success: true })
+                res.status(200).json({ success: true,data:data })
             })
     })
 

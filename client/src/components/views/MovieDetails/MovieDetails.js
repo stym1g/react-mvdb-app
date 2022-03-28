@@ -6,8 +6,9 @@ import GridCard from '../LandingPage/sections/GridCard';
 import axios from 'axios';
 import Comments from '../LandingPage/sections/Comments';
 import MovieInfo from '../LandingPage/sections/MovieInfo';
-
+import { useSelector } from "react-redux";
 function MovieDetails(props) {
+    const user = useSelector(state => state.user);
     const movieId = props.match.params.movieId;
     const [movie,setMovie] = useState([]);
     const [crews,setCrews] = useState([]);
@@ -44,14 +45,14 @@ function MovieDetails(props) {
     }
 
     
-    useEffect(()=>{
+    useEffect(()=>{ 
         let endpointForMovieInfo = `${API_URL}movie/${movieId}?api_key=${API_KEY}&language=en-US`;
         fetchDetailInfo(endpointForMovieInfo);
         axios.post('/api/comment/getComments', movieVariable)
         .then(response=>{
             //console.log(response);
             if(response.data.success){
-                console.log("response.data.comments: ",response.data.comments);
+                //console.log("response.data.comments: ",response.data.comments);
                 setCommentLists(response.data.comments);
             }else{
                 console.log("Failed to get comments");
@@ -86,7 +87,7 @@ function MovieDetails(props) {
                         {
                             !LoadingForCasts ? crews.map((cast, index) => (
                                 cast.profile_path &&
-                                <GridCard actor image={cast.profile_path} characterName={cast.characterName} />
+                                <GridCard actor image={cast.profile_path} characterName={cast.characterName} cast ={cast} />
                             )) :
                                 <div>loading...</div>
                         }
